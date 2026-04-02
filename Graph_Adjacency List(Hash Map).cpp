@@ -22,7 +22,6 @@ class Graph
 	
 	void printAdjList()
 	{
-		//iterate all over the keys of the hash map
 		for(auto p :l)
 		{
 			string city = p.first;
