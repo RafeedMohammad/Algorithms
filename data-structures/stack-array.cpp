@@ -1,36 +1,37 @@
-#include<iostream>
+#include <iostream>
 using namespace std;
 
-struct Stack{
+struct Stack
+{
     int top;
     int cap;
     int *arr;
 };
 
-Stack* createStack(int capacity)
+Stack *createStack(int capacity)
 {
-    Stack *stack = (Stack*) malloc(sizeof(Stack));
+    Stack *stack = (Stack *)malloc(sizeof(Stack));
     stack->cap = capacity;
     stack->top = -1;
-    stack->arr = (int*) malloc(stack->cap * sizeof(int));
+    stack->arr = (int *)malloc(stack->cap * sizeof(int));
     return stack;
 }
 
 bool isFull(Stack *stack)
 {
-    return stack->top == stack->cap-1;
+    return stack->top == stack->cap - 1;
 }
 
 bool isEmpty(Stack *stack)
 {
-    return stack->top == -1
+    return stack->top == -1;
 }
 
 void push(Stack *stack, int item)
 {
-    if(isFull(stack))
+    if (isFull(stack))
     {
-        cout<<"Stack is full"<<endl;
+        cout << "Stack is full" << endl;
     }
 
     stack->top++;
@@ -39,9 +40,9 @@ void push(Stack *stack, int item)
 
 int pop(Stack *stack)
 {
-    if(isEmpty(stack))
+    if (isEmpty(stack))
     {
-        cout<<"Stack is empty"<<endl;
+        cout << "Stack is empty" << endl;
     }
 
     int item = stack->arr[stack->top--];
@@ -50,9 +51,9 @@ int pop(Stack *stack)
 
 int peek(Stack *stack)
 {
-    if(isEmpty(stack))
+    if (isEmpty(stack))
     {
-        cout<<"Stack is empty"<<endl;
+        cout << "Stack is empty" << endl;
     }
 
     return stack->arr[stack->top];
@@ -66,8 +67,7 @@ int main()
     push(stack, 3);
     push(stack, 4);
     push(stack, 5);
-    cout<<peek(stack)<<endl;
-    cout<<pop(stack)<<endl;
-    cout<<peek(stack)<<endl;
+    cout << peek(stack) << endl;
+    cout << pop(stack) << endl;
+    cout << peek(stack) << endl;
 }
-
