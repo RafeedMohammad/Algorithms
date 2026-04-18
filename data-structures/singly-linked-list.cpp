@@ -43,13 +43,44 @@ void insertEnd(int value)
     temp->next = newNode;
 }
 
+void deleteNode(int value)
+{
+    if (head == NULL)
+    {
+        return;
+    }
+
+    if (head->data == value)
+    {
+        Node *temp = head;
+        head = head->next;
+        delete temp;
+        return;
+    }
+
+    Node *prev = head;
+    Node *curr = head->next;
+
+    while (curr != NULL)
+    {
+        if (curr->data == value)
+        {
+            prev->next = curr->next;
+            delete curr;
+            return;
+        }
+
+        prev = curr;
+        curr = curr->next;
+    }
+}
+
 int main()
 {
-    Node *head = NULL;
-
     insertEnd(10);
     insertEnd(20);
     insertEnd(30);
+    deleteNode(20);
 
     cout << "Linked List: ";
     printList();
