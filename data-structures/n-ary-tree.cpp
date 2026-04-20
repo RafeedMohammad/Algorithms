@@ -5,6 +5,7 @@ using namespace std;
 struct TreeNode *GetNewNode(int data);
 void addChild(TreeNode *node, int data);
 void Print(TreeNode *root);
+void recursivePrint(TreeNode *root);
 
 struct TreeNode
 {
@@ -39,11 +40,25 @@ void Print(TreeNode *root)
     cout << root->children[1]->data << " ";
 }
 
+void recursivePrint(TreeNode *root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    cout << root->data << " ";
+    for (int i = 0; i < root->children.size(); i++)
+    {
+        recursivePrint(root->children[i]);
+    }
+}
+
 int main()
 {
     TreeNode *root;
     root = GetNewNode(3);
     addChild(root, 10);
     addChild(root, 20);
-    Print(root);
+    recursivePrint(root);
 }
