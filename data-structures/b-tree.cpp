@@ -82,6 +82,57 @@ BTreeNode *search(BTreeNode *root, int key)
     return search(root->children[i], key);
 }
 
+void splitChild(BTreeNode *parent, int i)
+{
+    BTreeNode *y = parent->children[i];
+
+    // create new node z (same leaf status as y)
+    BTreeNode *z = createNode(y->isLeaf);
+
+    z->n = t - 1;
+
+    // copy last (t-1) keys into z: indices after the midpoint
+    for (int j = 0; j < t - 1; j++)
+    {
+        z->keys[i] = y->keys[j + t];
+    }
+
+    // if y is not leaf, copy the last t children of y into z
+
+    if (y->isLeaf == false)
+    {
+        for (int j = 0; j < t; j++)
+        {
+            z->children[j] = y->children[j + t];
+        }
+    }
+
+    // reduce number of keys in y
+    y->n = t - 1;
+
+    // shift parent's children to make space for z
+
+    for (int j = parent->n; j >= i + 1; j--)
+    {
+        parent->children[j + 1] = parent->children[j];
+    }
+
+    // Link z as parent's child
+    parent->children[i + 1] = z;
+
+    // Shift parent's keys to make space for middle key
+    for (int j = parent->n - 1; j >= i; j--)
+    {
+        parent->keys[j + 1] = parent->keys[j];
+    }
+
+    // move middle key of y to parent
+    parent->keys[i] = y->keys[t - 1];
+
+    // increase key count of parent
+    parent->n = parent->n + 1;
+}
+
 int main()
 {
     BTreeNode *root = createNode(true);
