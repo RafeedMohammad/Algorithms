@@ -117,7 +117,69 @@ graph TD
 
 ---
 
-## 4. Plan: Converting to B+ Tree
+---
+
+## 4. Dry Run Overview: Step-by-Step Execution
+
+To understand how the code handles data, let's dry run the existing `main()` function and a hypothetical split scenario.
+
+### Scenario A: Execution of `main()`
+**Initial State:** `root = createNode(true)` (Leaf node, `n=0`)
+
+1.  **Manual Insertion:**
+    ```cpp
+    root->keys[0] = 10; root->keys[1] = 20; root->keys[2] = 30; root->n = 3;
+    ```
+    - The `root` now contains 3 keys. Since $t=3$, the max keys is 5. So the node is NOT full yet.
+
+2.  **Traversal (`traverse(root)`):**
+    - `i=0`: `isLeaf` is true, so it skips `traverse(children[0])`. Prints `10`.
+    - `i=1`: Prints `20`.
+    - `i=2`: Prints `30`.
+    - Loop ends. Final check for `isLeaf` is true, so skips last child.
+    - **Output:** `10 20 30`
+
+3.  **Searching (`search(root, 40)`):**
+    - `i=0`: `40 > keys[0]` (10) -> `i=1`
+    - `i=1`: `40 > keys[1]` (20) -> `i=2`
+    - `i=2`: `40 > keys[2]` (30) -> `i=3`
+    - `while` loop ends because `i < n` is now false ($3 < 3$ is false).
+    - `root->keys[i] == key` check fails (out of bounds or garbage, but `i` is 3).
+    - `root->isLeaf` is true -> **Return NULL** (Not found).
+
+---
+
+### Scenario B: Deep Dive into `splitChild`
+Suppose we have a `parent` and a full child `y` (at index 0). $t=3$.
+
+**State Before Split:**
+- `parent`: `keys = [100]`, `n = 1`, `children[0] = y`
+- `y`: `keys = [10, 20, 30, 40, 50]`, `n = 5`, `isLeaf = true`
+
+**Executing `splitChild(parent, 0)`:**
+
+1.  **Create Node `z` (Line 90):**
+    - `z` is created as a leaf. `z->n = 2` (t-1).
+2.  **Move Keys to `z` (Line 95-98):**
+    - `z->keys[0] = y->keys[3]` (40)
+    - `z->keys[1] = y->keys[4]` (50)
+3.  **Update `y` count (Line 111):**
+    - `y->n = 2`. Now `y` only "sees" `[10, 20]`.
+4.  **Shift Parent Children (Line 115-118):**
+    - `parent->children[2] = parent->children[1]`
+    - `parent->children[1] = z` (Line 121)
+5.  **Shift Parent Keys (Line 124-127):**
+    - `parent->keys[1] = parent->keys[0]` (100 moves to index 1)
+6.  **Move Median Up (Line 130):**
+    - `parent->keys[0] = y->keys[2]` (30 moves up)
+7.  **Final Result:**
+    - `parent`: `keys = [30, 100]`, `n = 2`
+    - `parent->children[0]` points to `y [10, 20]`
+    - `parent->children[1]` points to `z [40, 50]`
+
+---
+
+## 5. Plan: Converting to B+ Tree
 
 A B+ Tree differs from a B-Tree primarily in how it stores data and links leaf nodes.
 

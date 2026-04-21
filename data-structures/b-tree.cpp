@@ -94,7 +94,7 @@ void splitChild(BTreeNode *parent, int i)
     // copy last (t-1) keys into z: indices after the midpoint
     for (int j = 0; j < t - 1; j++)
     {
-        z->keys[i] = y->keys[j + t];
+        z->keys[j] = y->keys[j + t];
     }
 
     // if y is not leaf, copy the last t children of y into z
