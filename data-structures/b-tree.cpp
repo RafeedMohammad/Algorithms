@@ -29,12 +29,13 @@ BTreeNode *createNode(bool leaf)
 
 void traverse(BTreeNode *root)
 {
+    int i;
     if (root == NULL)
     {
         return;
     }
 
-    for (int i = 0; i < root->n; i++)
+    for (i = 0; i < root->n; i++)
     {
         if (root->isLeaf == false)
         {
@@ -48,4 +49,59 @@ void traverse(BTreeNode *root)
     {
         traverse(root->children[i]);
     }
+}
+
+BTreeNode *search(BTreeNode *root, int key)
+{
+    if (root == NULL)
+    {
+        return NULL;
+    }
+
+    int i = 0;
+
+    // find first key >= key
+    while (i < root->n && key > root->keys[i])
+    {
+        i++;
+    }
+
+    // if key found
+    while (i < root->n && root->keys[i] == key)
+    {
+        return root;
+    }
+
+    // if leaf, key not found
+    if (root->isLeaf == true)
+    {
+        return NULL;
+    }
+
+    // go to correct child
+    return search(root->children[i], key);
+}
+
+int main()
+{
+    BTreeNode *root = createNode(true);
+    root->keys[0] = 10;
+    root->keys[1] = 20;
+    root->keys[2] = 30;
+    root->n = 3;
+    traverse(root);
+
+    BTreeNode *found = search(root, 40);
+
+    cout << endl;
+
+    if (found != NULL)
+    {
+        cout << "found" << endl;
+    }
+    else
+    {
+        cout << "not found" << endl;
+    }
+    return 0;
 }
