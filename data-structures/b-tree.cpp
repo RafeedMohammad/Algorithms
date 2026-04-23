@@ -13,6 +13,8 @@ struct BTreeNode
     bool isLeaf;
 };
 
+BTreeNode *root = NULL; // global root
+
 BTreeNode *createNode(bool leaf)
 {
     BTreeNode *newNode = new BTreeNode();
@@ -145,7 +147,7 @@ void insertNonFull(BTreeNode *node, int key)
     }
 }
 
-void insert(BTreeNode *&root, int key)
+void insert(int key)
 {
     // If tree is empty
     if (root == NULL)
@@ -239,16 +241,14 @@ BTreeNode *search(BTreeNode *root, int key)
 
 int main()
 {
-    BTreeNode *root = NULL;
-
-    insert(root, 10);
-    insert(root, 20);
-    insert(root, 5);
-    insert(root, 6);
-    insert(root, 12);
-    insert(root, 30);
-    insert(root, 7);
-    insert(root, 17);
+    insert(10);
+    insert(20);
+    insert(5);
+    insert(6);
+    insert(12);
+    insert(30);
+    insert(7);
+    insert(17);
 
     cout << "Traversal: ";
     traverse(root);
