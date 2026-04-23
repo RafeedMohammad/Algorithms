@@ -27,61 +27,6 @@ BTreeNode *createNode(bool leaf)
     return newNode;
 }
 
-void traverse(BTreeNode *root)
-{
-    int i;
-    if (root == NULL)
-    {
-        return;
-    }
-
-    for (i = 0; i < root->n; i++)
-    {
-        if (root->isLeaf == false)
-        {
-            traverse(root->children[i]);
-        }
-
-        cout << root->keys[i] << " ";
-    }
-
-    if (root->isLeaf == false)
-    {
-        traverse(root->children[i]);
-    }
-}
-
-BTreeNode *search(BTreeNode *root, int key)
-{
-    if (root == NULL)
-    {
-        return NULL;
-    }
-
-    int i = 0;
-
-    // find first key >= key
-    while (i < root->n && key > root->keys[i])
-    {
-        i++;
-    }
-
-    // if key found
-    while (i < root->n && root->keys[i] == key)
-    {
-        return root;
-    }
-
-    // if leaf, key not found
-    if (root->isLeaf == true)
-    {
-        return NULL;
-    }
-
-    // go to correct child
-    return search(root->children[i], key);
-}
-
 void splitChild(BTreeNode *parent, int i)
 {
     BTreeNode *y = parent->children[i];
@@ -133,26 +78,190 @@ void splitChild(BTreeNode *parent, int i)
     parent->n = parent->n + 1;
 }
 
-int main()
+void traverse(BTreeNode *root)
 {
-    BTreeNode *root = createNode(true);
-    root->keys[0] = 10;
-    root->keys[1] = 20;
-    root->keys[2] = 30;
-    root->n = 3;
-    traverse(root);
-
-    BTreeNode *found = search(root, 40);
-
-    cout << endl;
-
-    if (found != NULL)
+    int i;
+    if (root == NULL)
     {
-        cout << "found" << endl;
+        return;
+    }
+
+    for (i = 0; i < root->n; i++)
+    {
+        if (root->isLeaf == false)
+        {
+            traverse(root->children[i]);
+        }
+
+        cout << root->keys[i] << " ";
+    }
+
+    if (root->isLeaf == false)
+    {
+        traverse(root->children[i]);
+    }
+}
+
+// This function inserts a key into a note that is guranteed not full
+void insertNonFull(BTreeNode *node, int key)
+{
+    int i = node->n - 1;
+
+    if (node->isLeaf == true)
+    {
+        while (i >= 0 && node->keys[i] > key)
+        {
+            node->keys[i + 1] = node->keys[i];
+            i--;
+        }
+
+        node->keys[i + 1] = key;
+        node->n = node->n + 1;
+    }
+
+    else
+    {
+        while (i >= 0 && node->keys[i] > key)
+        {
+            i--;
+        }
+
+        i++;
+
+        if (node->children[i]->n == MAX_KEYS)
+        {
+            splitChild(node, i);
+
+            // after split, middle key moved up
+            // decide which child should get the key
+
+            if (node->keys[i] < key)
+            {
+                i++;
+            }
+        }
+
+        insertNonFull(node->children[i], key);
+    }
+}
+
+void insert(BTreeNode *&root, int key)
+{
+    // If tree is empty
+    if (root == NULL)
+    {
+        root = createNode(true);
+        root->keys[0] = key;
+        root->n = 1;
+        return;
+    }
+
+    // If root is full, tree grows in height
+    if (root->n == MAX_KEYS)
+    {
+        BTreeNode *newRoot = createNode(false);
+
+        // old root becomes child of new root
+        newRoot->children[0] = root;
+
+        // split old root
+        splitChild(newRoot, 0);
+
+        // decide which child will contain new key
+        int i = 0;
+        if (newRoot->keys[0] < key)
+            i++;
+
+        insertNonFull(newRoot->children[i], key);
+
+        root = newRoot;
     }
     else
     {
-        cout << "not found" << endl;
+        insertNonFull(root, key);
     }
+}
+
+BTreeNode *search(BTreeNode *root, int key)
+{
+    if (root == NULL)
+    {
+        return NULL;
+    }
+
+    int i = 0;
+
+    // find first key >= key
+    while (i < root->n && key > root->keys[i])
+    {
+        i++;
+    }
+
+    // if key found
+    if (i < root->n && root->keys[i] == key)
+    {
+        return root;
+    }
+
+    // if leaf, key not found
+    if (root->isLeaf == true)
+    {
+        return NULL;
+    }
+
+    // go to correct child
+    return search(root->children[i], key);
+}
+
+// int main()
+// {
+//     BTreeNode *root = createNode(true);
+//     root->keys[0] = 10;
+//     root->keys[1] = 20;
+//     root->keys[2] = 30;
+//     root->n = 3;
+//     traverse(root);
+
+//     BTreeNode *found = search(root, 40);
+
+//     cout << endl;
+
+//     if (found != NULL)
+//     {
+//         cout << "found" << endl;
+//     }
+//     else
+//     {
+//         cout << "not found" << endl;
+//     }
+//     return 0;
+// }
+
+int main()
+{
+    BTreeNode *root = NULL;
+
+    insert(root, 10);
+    insert(root, 20);
+    insert(root, 5);
+    insert(root, 6);
+    insert(root, 12);
+    insert(root, 30);
+    insert(root, 7);
+    insert(root, 17);
+
+    cout << "Traversal: ";
+    traverse(root);
+
+    cout << endl;
+
+    int target = 12;
+    BTreeNode *found = search(root, target);
+
+    if (found != NULL)
+        cout << target << " found\n";
+    else
+        cout << target << " not found\n";
+
     return 0;
 }
