@@ -112,8 +112,10 @@ public:
         }
 
         vector<Node *> level{root};
+        int j = 0;
         while (!level.empty())
         {
+            cout << "Level-" << j++ << ": ";
             vector<Node *> next;
             for (Node *n : level)
             {
@@ -194,7 +196,7 @@ private:
             // Pitfall 1: promote the FIRST key of the right node (copy — key stays in leaf)
             // left  keeps keys[0 .. mid-1]
             // right gets  keys[mid .. end]   ← sibling->keys.front() is promoted
-            int mid = order / 2;
+            int mid = order / 2; // maxKeys divided by 2 is safer mid (for odd orders)
 
             sibling->keys.assign(child->keys.begin() + mid, child->keys.end());
             child->keys.erase(child->keys.begin() + mid, child->keys.end());
