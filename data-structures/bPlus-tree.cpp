@@ -43,6 +43,41 @@ public:
         return -1;
     }
 
+    void rangeSearch(int low, int high) const
+    {
+        if (!root)
+            return;
+
+        Node *cur = root;
+
+        // go down to leaf
+        while (!cur->leaf)
+        {
+            int i = 0;
+            while (i < (int)cur->keys.size() && low > cur->keys[i])
+                ++i;
+            cur = cur->child[i];
+        }
+
+        // traverse leaf list
+        while (cur)
+        {
+            for (int i = 0; i < (int)cur->keys.size(); i++)
+            {
+                if (cur->keys[i] >= low && cur->keys[i] <= high)
+                    cout << "(" << cur->keys[i] << "," << cur->values[i] << ") ";
+
+                if (cur->keys[i] > high)
+                {
+                    cout << "\n";
+                    return;
+                }
+            }
+            cur = cur->next;
+        }
+        cout << "\n";
+    }
+
     // ─── INSERT ──────────────────────────────────────────────
     void insert(int key, int value)
     {
@@ -220,4 +255,6 @@ int main()
 
     int q = 12;
     cout << "\nSearch " << q << " -> " << tree.search(q) << "\n";
+
+    tree.rangeSearch(1, 30);
 }
