@@ -3,6 +3,14 @@ using namespace std;
 
 int arr[] = {1, 4, 2, 10, 9, 12, 15};
 
+void printArray(int low, int high)
+{
+    cout << "[ ";
+    for (int i = low; i <= high; i++)
+        cout << arr[i] << " ";
+    cout << "]";
+}
+
 void merge(int low, int mid, int high)
 {
     int temp[high - low + 1];
@@ -10,27 +18,37 @@ void merge(int low, int mid, int high)
     int j = mid + 1;
     int k = 0;
 
-    while(i <= mid && j <= high)
+    cout << "\nMerging: ";
+    printArray(low, mid);
+    cout << " and ";
+    printArray(mid + 1, high);
+    cout << endl;
+
+    while (i <= mid && j <= high)
     {
-        if(arr[i] <= arr[j])
+        if (arr[i] <= arr[j])
             temp[k++] = arr[i++];
         else
             temp[k++] = arr[j++];
     }
 
-    while(i <= mid)
+    while (i <= mid)
         temp[k++] = arr[i++];
 
-    while(j <= high)
+    while (j <= high)
         temp[k++] = arr[j++];
 
-    for(int x = 0; x < k; x++)
+    for (int x = 0; x < k; x++)
         arr[low + x] = temp[x];
+
+    printArray(mid + 1, high);
+    cout << endl;
 }
 
 void mergeSort(int low, int high)
 {
-    if(low >= high) return;
+    if (low >= high)
+        return;
 
     int mid = low + (high - low) / 2;
 
@@ -47,7 +65,7 @@ int main()
     mergeSort(0, n - 1);
 
     cout << "Sorted Array:\n";
-    for(int i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
         cout << arr[i] << " ";
 
     return 0;
