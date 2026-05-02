@@ -29,6 +29,8 @@ void printSupportCount(const map<string, int> &supportCount);
 set<set<string>> generateL1(const map<string, int> &supportCount, int minSupport);
 void printFrequentItemsets(const set<set<string>> &L);
 
+set<set<string>> generateC2(const set<set<string>> &L1);
+
 int main()
 {
     int n; // no. of transactions
@@ -51,6 +53,11 @@ int main()
 
     cout << "\nFrequent 1-itemsets (L1):" << endl;
     printFrequentItemsets(L1);
+
+    set<set<string>> C2 = generateC2(L1);
+
+    cout << "\nCandidate 2-itemsets (C2):" << endl;
+    printFrequentItemsets(C2);
 
     return 0;
 }
@@ -148,9 +155,37 @@ void printFrequentItemsets(const set<set<string>> &L)
         cout << "{ ";
         for (auto &item : itemset)
         {
-            cout << item << " }";
+            cout << item;
         }
-
+        cout << " }";
         cout << endl;
     }
+}
+
+set<set<string>> generateC2(const set<set<string>> &L1)
+{
+    set<set<string>> C2;
+
+    // convert L1 to vector for easy inedexing
+    vector<string> items;
+
+    for (auto &itemset : L1)
+    {
+        items.push_back(*itemset.begin());
+    }
+
+    // generate all pairs
+    for (int i = 0; i < items.size(); i++)
+    {
+        for (int j = i + 1; j < items.size(); j++)
+        {
+            set<string> candidate;
+            candidate.insert(items[i]);
+            candidate.insert(items[j]);
+
+            C2.insert(candidate);
+        }
+    }
+
+    return C2;
 }
