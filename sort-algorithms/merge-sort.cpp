@@ -13,16 +13,10 @@ void printArray(int low, int high)
 
 void merge(int low, int mid, int high)
 {
-    int temp[high - low + 1];
+    int *temp = new int[high - low + 1];
     int i = low;
     int j = mid + 1;
     int k = 0;
-
-    cout << "\nMerging: ";
-    printArray(low, mid);
-    cout << " and ";
-    printArray(mid + 1, high);
-    cout << endl;
 
     while (i <= mid && j <= high)
     {

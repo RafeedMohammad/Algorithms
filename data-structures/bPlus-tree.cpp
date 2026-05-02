@@ -113,9 +113,10 @@ public:
 
         vector<Node *> level{root};
         int j = 0;
+
         while (!level.empty())
         {
-            cout << "Level-" << j++ << ": ";
+            cout << j++;
             vector<Node *> next;
             for (Node *n : level)
             {

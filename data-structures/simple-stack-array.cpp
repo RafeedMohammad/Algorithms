@@ -37,6 +37,30 @@ int pop()
     return st[top--];
 }
 
+void multiPop(int n)
+{
+    if (isEmpty())
+    {
+        cout << "Stack underflow" << endl;
+    }
+
+    if (n >= top + 1)
+    {
+        while (!isEmpty())
+        {
+            pop();
+        }
+    }
+
+    else
+    {
+        while (n--)
+        {
+            pop();
+        }
+    }
+}
+
 int peek()
 {
     if (isEmpty())
@@ -64,7 +88,8 @@ int main()
     push(10);
     cout << "top element: " << peek() << endl;
     printStack();
-    pop();
+    // pop();
+    multiPop(2);
     printStack();
 
     return 0;
