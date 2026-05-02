@@ -26,6 +26,9 @@ void printTransactions(const vector<set<string>> &transactions);
 map<string, int> countSingleItemSupport(const vector<set<string>> &transactions);
 void printSupportCount(const map<string, int> &supportCount);
 
+set<set<string>> generateL1(const map<string, int> &supportCount, int minSupport);
+void printFrequentItemsets(const set<set<string>> &L);
+
 int main()
 {
     int n; // no. of transactions
@@ -44,7 +47,10 @@ int main()
     cout << "Enter minimum support: ";
     cin >> minSupport;
 
-    
+    set<set<string>> L1 = generateL1(supportCount, minSupport);
+
+    cout << "\nFrequent 1-itemsets (L1):" << endl;
+    printFrequentItemsets(L1);
 
     return 0;
 }
@@ -115,5 +121,36 @@ void printSupportCount(const map<string, int> &supportCount)
     for (auto &entry : supportCount)
     {
         cout << entry.first << " -> " << entry.second << endl;
+    }
+}
+
+set<set<string>> generateL1(const map<string, int> &supportCount, int minSupport)
+{
+    set<set<string>> L1;
+
+    for (auto &entry : supportCount)
+    {
+        if (entry.second >= minSupport)
+        {
+            set<string> itemset;
+            itemset.insert(entry.first);
+            L1.insert(itemset);
+        }
+    }
+
+    return L1;
+}
+
+void printFrequentItemsets(const set<set<string>> &L)
+{
+    for (auto &itemset : L)
+    {
+        cout << "{ ";
+        for (auto &item : itemset)
+        {
+            cout << item << " }";
+        }
+
+        cout << endl;
     }
 }
