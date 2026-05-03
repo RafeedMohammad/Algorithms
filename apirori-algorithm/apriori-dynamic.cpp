@@ -29,6 +29,13 @@ set<set<string>> pruneCandidates(
     const map<set<string>, int> &candidateSupport,
     int minSupport);
 
+vector<set<string>> generateSubsets(const set<string> &itemset);
+
+map<set<string>, int> allSupport;
+
+// to generate association rules
+void generateAssociationRules(int totalTransactions, double minConfidence);
+
 int main()
 {
     int n;
@@ -37,58 +44,88 @@ int main()
     cin.ignore();
 
     vector<set<string>> transactions = readTransactions(n);
-
     printTransactions(transactions);
 
     // Step 1: Count 1-item supports
     map<string, int> supportCount = countSingleItemSupport(transactions);
     printSupportCount(supportCount);
 
+    for (auto &entry : supportCount)
+    {
+        set<string> s;
+        s.insert(entry.first);
+        allSupport[s] = entry.second;
+    }
+
     int minSupport;
     cout << "\nEnter minimum support: ";
     cin >> minSupport;
 
     // Step 2: Generate L1
-    set<set<string>> L1 = generateL1(supportCount, minSupport);
+    set<set<string>> L = generateL1(supportCount, minSupport);
 
     cout << "\nFrequent 1-itemsets (L1):\n";
-    printItemsets(L1);
+    printItemsets(L);
 
-    // Step 3: Generate C2
-    set<set<string>> C2 = generateCandidates(L1, 2);
+    // Step 3 onwards: Loop for C2, C3, C4... until stop
+    int k = 1;
 
-    cout << "\nCandidate 2-itemsets (C2):\n";
-    printItemsets(C2);
+    while (!L.empty())
+    {
+        int nextK = k + 1;
 
-    // Step 4: Count support for C2
-    map<set<string>, int> C2Support = countCandidateSupport(transactions, C2);
+        // Generate candidates
+        set<set<string>> C = generateCandidates(L, nextK);
 
-    cout << "\nSupport count of C2 candidates:\n";
-    printCandidateSupport(C2Support);
+        if (C.empty())
+            break;
 
-    // Step 5: Prune -> L2
-    set<set<string>> L2 = pruneCandidates(C2Support, minSupport);
+        cout << "\nCandidate " << nextK << "-itemsets (C" << nextK << "):\n";
+        printItemsets(C);
 
-    cout << "\nFrequent 2-itemsets (L2):\n";
-    printItemsets(L2);
+        // Count support
+        map<set<string>, int> candSupport = countCandidateSupport(transactions, C);
 
-    // Step 6: Generate C3
-    set<set<string>> C3 = generateCandidates(L2, 3);
+        for (auto &entry : candSupport)
+        {
+            allSupport[entry.first] = entry.second;
+        }
 
-    cout << "\nCandidate 3-itemsets (C3):\n";
-    printItemsets(C3);
+        cout << "\nSupport count of C" << nextK << " candidates:\n";
+        printCandidateSupport(candSupport);
 
-    // Step 7: Count support for C3
-    map<set<string>, int> C3Support = countCandidateSupport(transactions, C3);
+        // Prune to get frequent itemsets
+        set<set<string>> Lnew = pruneCandidates(candSupport, minSupport);
 
-    cout << "\nSupport count of C3 candidates:\n";
-    printCandidateSupport(C3Support);
+        if (Lnew.empty())
+            break;
 
-    // Step 8: Prune -> L3
-    set<set<string>> L3 = pruneCandidates(C3Support, minSupport);
+        cout << "\nFrequent " << nextK << "-itemsets (L" << nextK << "):\n";
+        printItemsets(Lnew);
 
-    cout << "\nFrequent 3-itemsets (L3):\n";
-    printItemsets(L3);
+        // Move forward
+        L = Lnew;
+        k = nextK;
+
+        // Subset Testing
+        //  set<string> test = {"A", "B", "C"};
+        //  vector<set<string>> subs = generateSubsets(test);
+
+        // cout << "\nSubsets of {A,B,C}:\n";
+        // for (auto &s : subs)
+        // {
+        //     cout << "{ ";
+        //     for (auto &x : s)
+        //         cout << x << " ";
+        //     cout << "}\n";
+        // }
+    }
+
+    double minConfidence;
+    cout << "\nEnter minimum confidence (0 to 1): ";
+    cin >> minConfidence;
+
+    generateAssociationRules(n, minConfidence);
 
     return 0;
 }
@@ -277,4 +314,84 @@ set<set<string>> pruneCandidates(
     }
 
     return frequent;
+}
+
+vector<set<string>> generateSubsets(const set<string> &itemset)
+{
+    vector<string> items(itemset.begin(), itemset.end());
+    int n = items.size();
+
+    vector<set<string>> subsets;
+
+    // masks from 1 to (2^n - 2)
+    for (int mask = 1; mask < (1 << n) - 1; mask++)
+    {
+        set<string> subset;
+
+        for (int i = 0; i < n; i++)
+        {
+            if (mask & (1 << i))
+            {
+                subset.insert(items[i]);
+            }
+        }
+
+        subsets.push_back(subset);
+    }
+
+    return subsets;
+}
+
+void generateAssociationRules(int totalTransactions, double minConfidence)
+{
+    cout << "\n========== ASSOCIATION RULES ==========\n";
+
+    for (auto &entry : allSupport)
+    {
+        set<string> itemset = entry.first;
+
+        if (itemset.size() < 2)
+            continue;
+
+        int supXY = entry.second;
+
+        vector<set<string>> subsets = generateSubsets(itemset);
+
+        for (auto &X : subsets)
+        {
+            set<string> Y;
+
+            set_difference(itemset.begin(), itemset.end(),
+                           X.begin(), X.end(),
+                           inserter(Y, Y.begin()));
+
+            // X and Y must exist in support table
+            if (allSupport.find(X) == allSupport.end())
+                continue;
+            if (allSupport.find(Y) == allSupport.end())
+                continue;
+
+            int supX = allSupport[X];
+            int supY = allSupport[Y];
+
+            double confidence = (double)supXY / supX;
+            double support = (double)supXY / totalTransactions;
+            double lift = confidence / ((double)supY / totalTransactions);
+
+            if (confidence >= minConfidence)
+            {
+                cout << "{ ";
+                for (auto &x : X)
+                    cout << x << " ";
+                cout << "} -> { ";
+                for (auto &y : Y)
+                    cout << y << " ";
+                cout << "}";
+
+                cout << "  Support: " << support;
+                cout << "  Confidence: " << confidence;
+                cout << "  Lift: " << lift << endl;
+            }
+        }
+    }
 }
