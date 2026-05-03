@@ -8,32 +8,69 @@
 using namespace std;
 
 // Function Prototypes
+
+// reads n transactions
 vector<set<string>> readTransactions(int n);
+
+// prints all transactions
 void printTransactions(const vector<set<string>> &transactions);
 
+// goes through all transactions and calculates frequency of each items
 map<string, int> countSingleItemSupport(const vector<set<string>> &transactions);
+
+// prints frequency of each count
 void printSupportCount(const map<string, int> &supportCount);
 
+// filters items based on minimum support (minSupport) - set of sets
 set<set<string>> generateL1(const map<string, int> &supportCount, int minSupport);
+
+// prints any level of frequent itemsets
 void printItemsets(const set<set<string>> &L);
 
+/*
+    Takes previous frequent itemsets(Lk-1)
+    Joins them to form k-item candidates (Ck)
+*/
 set<set<string>> generateCandidates(const set<set<string>> &prevL, int k);
 
+/*
+    Checks each transaction
+    Joins them to form k-item candidates (Ck)
+*/
 map<set<string>, int> countCandidateSupport(
     const vector<set<string>> &transactions,
     const set<set<string>> &candidates);
 
 void printCandidateSupport(const map<set<string>, int> &candidateSupport);
 
+/*
+    Removes itemsets whose support < minSupport
+    Keeps only frequent itemsets (Lk)
+*/
 set<set<string>> pruneCandidates(
     const map<set<string>, int> &candidateSupport,
     int minSupport);
 
+// Generates all possible subsets of an itemset
 vector<set<string>> generateSubsets(const set<string> &itemset);
 
+/*
+Global Support Storage
+    Stores support for every frequent itemset
+    Used later for confidence calculation
+*/
 map<set<string>, int> allSupport;
 
 // to generate association rules
+/*
+    1. Generate all subsets
+    2. Split into:
+        - Left Side (X)
+        - Right Side (Y = L-X)
+    3. Compute confidence
+        confidence = support(L) / support(X)
+    4. if confidence >= minConfidence: keep
+*/
 void generateAssociationRules(int totalTransactions, double minConfidence);
 
 int main()
