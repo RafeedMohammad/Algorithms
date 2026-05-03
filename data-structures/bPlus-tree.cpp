@@ -21,7 +21,7 @@ class BPlusTree
     const int maxKeys; // order - 1 (max keys in any node)
 
 public:
-    BPlusTree(int ord = 4) : root(nullptr), order(ord), maxKeys(ord - 1) {}
+    BPlusTree(int ord = 3) : root(nullptr), order(ord), maxKeys(ord - 1) {}
 
     // ─── SEARCH ──────────────────────────────────────────────
     int search(int key) const
@@ -197,7 +197,7 @@ private:
             // Pitfall 1: promote the FIRST key of the right node (copy — key stays in leaf)
             // left  keeps keys[0 .. mid-1]
             // right gets  keys[mid .. end]   ← sibling->keys.front() is promoted
-            int mid = order / 2; // maxKeys divided by 2 is safer mid (for odd orders)
+            int mid = child->keys.size() / 2; // maxKeys divided by 2 is safer mid (for odd orders)
 
             sibling->keys.assign(child->keys.begin() + mid, child->keys.end());
             child->keys.erase(child->keys.begin() + mid, child->keys.end());
@@ -219,7 +219,7 @@ private:
             // left  keeps keys[0 .. mid-1]  and children[0 .. mid]
             // promo =     keys[mid]          (pushed up, gone from child)
             // right gets  keys[mid+1 .. end] and children[mid+1 .. end]
-            int mid = maxKeys / 2; // = 1 for order-4 (maxKeys=3)
+            int mid = child->keys.size() / 2; // = 1 for order-4 (maxKeys=3)
 
             // Save promo BEFORE any erase (avoids the UB of reading after erase)
             int promo = child->keys[mid];
