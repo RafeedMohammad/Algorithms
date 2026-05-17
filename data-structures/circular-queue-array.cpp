@@ -36,6 +36,7 @@ void enqueue(int val)
     if (isFull())
     {
         cout << "The cirucular queue is full!" << endl;
+        return;
     }
 
     if (isEmpty())
@@ -74,9 +75,48 @@ int dequeue()
         front = (front + 1) % n;
     }
 
-    cout << val << " dequeued" << endl;
+    // cout << val << " dequeued" << endl;
+    return val;
+}
+
+void printQueue()
+{
+    if (isEmpty())
+    {
+        cout << "Queue is empty" << endl;
+        return;
+    }
+
+    int i = front;
+    while (true)
+    {
+        cout << arr[i] << " ";
+
+        if (i == rear)
+        {
+            break;
+        }
+
+        i = (i + 1) % n;
+    }
+    cout << endl;
 }
 
 int main()
 {
+    enqueue(20);
+    enqueue(40);
+    enqueue(10);
+    enqueue(50);
+    enqueue(60);
+    enqueue(20); // will output - the queue is full!
+
+    dequeue();
+    dequeue();
+    dequeue();
+    dequeue();
+    dequeue();
+    dequeue(); // will output - the queue is empty!
+
+    printQueue();
 }
