@@ -60,7 +60,18 @@ void quickSortStack(vector<int> &arr)
 int main()
 {
     vector<int> arr = {5, 2, 8, 1, 3};
+
+    cout << "Unsorted Array" << endl;
+    for (int x : arr)
+    {
+        cout << x << " ";
+    }
+
+    cout << endl;
+
     quickSortStack(arr);
+
+    cout << "Sorted Array" << endl;
 
     for (int x : arr)
     {

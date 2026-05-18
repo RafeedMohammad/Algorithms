@@ -132,6 +132,37 @@ public:
         return false;
     }
 
+    bool deleteKey(int key)
+    {
+        int idx = hash(key);
+        Node *curr = table[idx];
+        Node *prev = nullptr;
+
+        while (curr)
+        {
+            if (curr->key == key)
+            {
+                if (prev == nullptr)
+                {
+                    table[idx] = curr->next;
+                }
+
+                else
+                {
+                    prev->next = curr->next;
+                }
+
+                delete curr;
+                cout << "Deleted " << key << " from index " << idx << endl;
+                return true;
+            }
+            prev = curr;
+            curr = curr->next;
+        }
+
+        return 0;
+    }
+
     void display()
     {
         for (int i = 0; i < size; i++)
@@ -169,6 +200,11 @@ int main()
 
     ms.searchAndPrint(36);
     ms.searchAndPrint(125);
+    cout << endl;
+
+    ms.deleteKey(456);
+    cout << "After deletion operation" << endl;
+    ms.display();
     cout << endl;
 
     cout << "=== Folding Method (size=10, foldSize=2) ===\n";

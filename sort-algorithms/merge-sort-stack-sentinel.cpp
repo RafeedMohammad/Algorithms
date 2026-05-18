@@ -1,46 +1,55 @@
 #include <iostream>
 #include <stack>
 #include <vector>
+#include <climits>
 using namespace std;
 
-void merge(vector<int> &arr, int low, int mid, int high)
-{
-    vector<int> temp;
-    int i = low, j = mid + 1;
+vector<int> arr = {5, 2, 8, 1, 3};
+vector<int> L, R; // global sentinel
 
-    while (i <= mid && j <= high)
+void merge(int low, int mid, int high)
+{
+    int n1 = mid - low + 1;
+    int n2 = high - mid;
+
+    for (int i = 0; i < n1; i++)
     {
-        if (arr[i] <= arr[j])
+        L[i] = arr[low + i];
+    }
+
+    for (int j = 0; j < n2; j++)
+    {
+        R[j] = arr[mid + 1 + j];
+    }
+
+    L[n1] = INT_MAX;
+    R[n2] = INT_MAX;
+
+    int i = 0, j = 0;
+
+    for (int k = low; k <= high; k++)
+    {
+        if (L[i] <= R[j])
         {
-            temp.push_back(arr[i++]);
+            arr[k] = L[i++];
         }
 
         else
         {
-            temp.push_back(arr[j++]);
+            arr[k] = R[j++];
         }
-    }
-
-    while (i <= mid)
-    {
-        temp.push_back(arr[i++]);
-    }
-
-    while (j <= high)
-    {
-        temp.push_back(arr[j++]);
-    }
-
-    for (int k = low; k <= high; k++)
-    {
-        arr[k] = temp[k - low];
     }
 }
 
-void mergeSortIterative(vector<int> &arr)
+void mergeSortIterative()
 {
     int n = arr.size();
-    stack<pair<pair<int, int>, int>> stk;
+
+    L.resize(n + 1);
+    R.resize(n + 1);
+
+    stack<pair<pair<int, int>, int>>
+        stk;
     stk.push({{0, n - 1}, 0});
 
     while (!stk.empty())
@@ -69,14 +78,13 @@ void mergeSortIterative(vector<int> &arr)
 
         else
         {
-            merge(arr, low, mid, high);
+            merge(low, mid, high);
         }
     }
 }
 
 int main()
 {
-    vector<int> arr = {5, 2, 8, 1, 3};
     cout << "Unsorted Array:" << endl;
     for (int x : arr)
     {
@@ -84,7 +92,7 @@ int main()
     }
     cout << endl;
 
-    mergeSortIterative(arr);
+    mergeSortIterative();
 
     cout << "Sorted Array: " << endl;
     for (int x : arr)
