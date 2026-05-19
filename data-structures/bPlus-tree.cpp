@@ -30,7 +30,7 @@ public:
         while (cur)
         {
             int i = 0;
-            while (i < (int)cur->keys.size() && key > cur->keys[i])
+            while (i < (int)cur->keys.size() && key >= cur->keys[i])
                 ++i;
 
             if (cur->leaf)
@@ -54,7 +54,7 @@ public:
         while (!cur->leaf)
         {
             int i = 0;
-            while (i < (int)cur->keys.size() && low > cur->keys[i])
+            while (i < (int)cur->keys.size() && low >= cur->keys[i])
                 ++i;
             cur = cur->child[i];
         }
@@ -169,7 +169,7 @@ private:
 
         // Internal node: choose the right child
         int i = 0;
-        while (i < (int)node->keys.size() && key > node->keys[i])
+        while (i < (int)node->keys.size() && key >= node->keys[i])
             ++i;
 
         // Pitfall 5: split when == maxKeys (full), not after overflow
@@ -246,7 +246,7 @@ int main()
 {
     BPlusTree tree(4); // order 4 → max 3 keys per node
 
-    vector<int> seq = {10, 20, 5, 6, 12, 30, 7, 17};
+    vector<int> seq = {10, 20, 5, 6, 12, 30, 7, 17, 1, 100, 250, 3};
     for (int k : seq)
         tree.insert(k, k * 10); // value = key × 10 (dummy payload)
 
