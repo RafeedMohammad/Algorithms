@@ -30,17 +30,39 @@ public:
         while (cur)
         {
             int i = 0;
-            while (i < (int)cur->keys.size() && key >= cur->keys[i])
-                ++i;
-
+            // 1. If we are in a leaf node, find the exact match using >
             if (cur->leaf)
+            {
+                while (i < (int)cur->keys.size() && key > cur->keys[i])
+                    ++i;
                 return (i < (int)cur->keys.size() && cur->keys[i] == key)
                            ? cur->values[i]
                            : -1; // NOT FOUND
+            }
+
+            // 2. If we are in an internal node, route using >=
+            while (i < (int)cur->keys.size() && key >= cur->keys[i])
+                ++i;
 
             cur = cur->child[i];
         }
         return -1;
+    }
+
+    void countLeaves()
+    {
+        int leafCount = 0;
+        Node *temp = root;
+        while (temp->leaf == false)
+        {
+            temp = temp->child[0];
+        }
+        while (temp)
+        {
+            leafCount++;
+            temp = temp->next;
+        }
+        cout << "Total Leaves: " << leafCount;
     }
 
     void rangeSearch(int low, int high) const
@@ -255,6 +277,8 @@ int main()
 
     cout << "\nLeaf list (key,value):\n";
     tree.printLeaves();
+
+    tree.countLeaves();
 
     int q = 12;
     cout << "\nSearch " << q << " -> " << tree.search(q) << "\n";
