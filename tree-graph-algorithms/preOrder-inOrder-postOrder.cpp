@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 using namespace std;
 
 struct Node
@@ -14,6 +15,19 @@ struct Node
         this->right = nullptr;
     }
 };
+
+void preOrder(Node *root)
+{
+    if (root == nullptr)
+    {
+        return;
+    }
+
+    cout << root->data << " ";
+
+    preOrder(root->left);
+    preOrder(root->right);
+}
 
 int main()
 {
@@ -35,6 +49,9 @@ int main()
 
     rightChild->left = node6;
     rightChild->right = node7;
+
+    preOrder(root);
+    cout << endl;
 
     return 0;
 }
