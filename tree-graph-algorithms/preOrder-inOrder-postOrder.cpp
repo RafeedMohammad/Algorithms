@@ -29,6 +29,30 @@ void preOrder(Node *root)
     preOrder(root->right);
 }
 
+void inOrder(Node *root)
+{
+    if (root == nullptr)
+    {
+        return;
+    }
+
+    inOrder(root->left);
+    cout << root->data << " ";
+    inOrder(root->right);
+}
+
+void postOrder(Node *root)
+{
+    if (root == nullptr)
+    {
+        return;
+    }
+
+    postOrder(root->left);
+    postOrder(root->right);
+    cout << root->data << " ";
+}
+
 int main()
 {
     Node *root = new Node(1);
@@ -52,6 +76,9 @@ int main()
 
     preOrder(root);
     cout << endl;
+    inOrder(root);
+    cout << endl;
+    postOrder(root);
 
     return 0;
 }
