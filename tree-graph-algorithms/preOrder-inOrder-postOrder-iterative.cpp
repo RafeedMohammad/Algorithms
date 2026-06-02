@@ -20,7 +20,7 @@ void preOrderIterative(Node *root)
 {
     vector<Node *> stk;
     stk.push_back(root);
-
+    cout << "---Preorder Traversal---" << endl;
     while (!stk.empty())
     {
         Node *current = stk.back();
@@ -37,12 +37,14 @@ void preOrderIterative(Node *root)
             stk.push_back(current->left);
         }
     }
+    cout << endl;
 }
 
 void inOrderIterative(Node *root)
 {
     vector<Node *> stk;
     Node *curr = root;
+    cout << "---Inorder Traversal---" << endl;
     while (curr != nullptr || !stk.empty())
     {
         while (curr != nullptr)
@@ -56,6 +58,47 @@ void inOrderIterative(Node *root)
         cout << printer->data << " ";
         curr = printer->right;
     }
+
+    cout << endl;
+}
+
+void postOrderIterative(Node *root)
+{
+    if (root == nullptr)
+    {
+        return;
+    }
+
+    vector<Node *> stk1;
+    vector<Node *> stk2;
+
+    stk1.push_back(root);
+
+    while (!stk1.empty())
+    {
+        Node *current = stk1.back();
+        stk1.pop_back();
+        stk2.push_back(current);
+
+        if (current->left != nullptr)
+        {
+            stk1.push_back(current->left);
+        }
+
+        if (current->right != nullptr)
+        {
+            stk1.push_back(current->right);
+        }
+    }
+
+    cout << "---Postorder Traversal---" << endl;
+    while (!stk2.empty())
+    {
+        cout << stk2.back()->data << " ";
+        stk2.pop_back();
+    }
+
+    cout << endl;
 }
 
 int main()
@@ -84,6 +127,8 @@ int main()
 
     inOrderIterative(root);
     cout << endl;
+
+    postOrderIterative(root);
 
     return 0;
 }
