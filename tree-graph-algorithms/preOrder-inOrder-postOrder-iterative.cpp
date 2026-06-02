@@ -39,6 +39,25 @@ void preOrderIterative(Node *root)
     }
 }
 
+void inOrderIterative(Node *root)
+{
+    vector<Node *> stk;
+    Node *curr = root;
+    while (curr != nullptr || !stk.empty())
+    {
+        while (curr != nullptr)
+        {
+            stk.push_back(curr);
+            curr = curr->left;
+        }
+
+        Node *printer = stk.back();
+        stk.pop_back();
+        cout << printer->data << " ";
+        curr = printer->right;
+    }
+}
+
 int main()
 {
     Node *root = new Node(1);
@@ -61,6 +80,9 @@ int main()
     rightChild->right = node7;
 
     preOrderIterative(root);
+    cout << endl;
+
+    inOrderIterative(root);
     cout << endl;
 
     return 0;
