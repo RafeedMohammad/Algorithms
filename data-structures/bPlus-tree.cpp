@@ -13,7 +13,11 @@ class BPlusTree
         vector<int> values;   // only meaningful for leaf nodes
         vector<Node *> child; // child pointers (size = keys.size() + 1 for internal)
         Node *next;           // leaf-level linked list
-        Node(bool isLeaf) : leaf(isLeaf), next(nullptr) {}
+        Node(bool isLeaf)
+        {
+            leaf = isLeaf;
+            next = nullptr;
+        }
     };
 
     Node *root;
