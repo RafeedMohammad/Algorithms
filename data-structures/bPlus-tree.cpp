@@ -287,5 +287,6 @@ int main()
     int q = 12;
     cout << "\nSearch " << q << " -> " << tree.search(q) << "\n";
 
+    cout << "\nRange Query:" << endl;
     tree.rangeSearch(1, 30);
 }
