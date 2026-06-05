@@ -50,11 +50,17 @@ public:
 
             cur = cur->child[i];
         }
+
         return -1;
     }
 
     void countLeaves()
     {
+        if (!root)
+        {
+            cout << "Total Leaves: 0";
+            return;
+        }
         int leafCount = 0;
         Node *temp = root;
         while (temp->leaf == false)
