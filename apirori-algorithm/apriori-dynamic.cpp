@@ -272,6 +272,7 @@ void printItemsets(const set<set<string>> &L)
 // Generate candidates (general)
 set<set<string>> generateCandidates(const set<set<string>> &prevL, int k)
 {
+
     set<set<string>> candidates;
     vector<set<string>> prevList(prevL.begin(), prevL.end());
 
@@ -287,7 +288,26 @@ set<set<string>> generateCandidates(const set<set<string>> &prevL, int k)
 
             if (candidate.size() == k)
             {
-                candidates.insert(candidate);
+                vector<set<string>> allSubs = generateSubsets(candidate);
+
+                bool valid = true;
+
+                for (auto &sub : allSubs)
+                {
+                    if (sub.size() == k - 1)
+                    {
+                        if (prevL.find(sub) == prevL.end())
+                        {
+                            valid = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (valid)
+                {
+                    candidates.insert(candidate);
+                }
             }
         }
     }
