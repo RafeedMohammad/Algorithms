@@ -452,3 +452,57 @@ void generateAssociationRules(int totalTransactions, double minConfidence)
         }
     }
 }
+
+/*
+Sample I/P
+        4
+        A B E
+        B D
+        B C
+        A B D
+        2
+        0.6
+
+
+Expected O/P
+        Enter number of transactions: Enter each transaction (space separated items):
+
+        Stored transactions:
+        T1: { A B E }
+        T2: { B D }
+        T3: { B C }
+        T4: { A B D }
+
+        Support count of 1-itemsets:
+        A -> 2
+        B -> 4
+        C -> 1
+        D -> 2
+        E -> 1
+
+        Enter minimum support:
+        Frequent 1-itemsets (L1):
+        { A }
+        { B }
+        { D }
+
+        Candidate 2-itemsets (C2):
+        { A B }
+        { A D }
+        { B D }
+
+        Support count of C2 candidates:
+        { A B } -> 2
+        { A D } -> 1
+        { B D } -> 2
+
+        Frequent 2-itemsets (L2):
+        { A B }
+        { B D }
+
+        Enter minimum confidence (0 to 1):
+        ========== ASSOCIATION RULES ==========
+        { A } -> { B }  Support: 0.5  Confidence: 1  Lift: 1
+        { D } -> { B }  Support: 0.5  Confidence: 1  Lift: 1
+
+*/
