@@ -2,9 +2,12 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 
-#include "data_parsers.h"
-#include "utf8_console.h"
+#include "data_parsers.cpp"
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 using namespace std;
 
@@ -269,16 +272,36 @@ private:
 
 int main(int argc, char *argv[])
 {
-    enable_utf8_console();
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+#endif
 
-    if (argc < 2)
+    string path = "data/dict.json";
+    int order = 64;
+
+    if (argc >= 2)
     {
-        cout << "Usage: bpt <dict.json>" << endl;
-        return 1;
+        path = argv[1];
+    }
+    else
+    {
+        std::string source_file = __FILE__;
+        size_t pos = source_file.find_last_of("/\\");
+        if (pos != std::string::npos)
+        {
+            path = source_file.substr(0, pos) + "/data/dict.json";
+        }
+        cout << "No dictionary path provided. Defaulting to: " << path << endl;
     }
 
-    string path = argv[1];
-    BPlusTree<string, string> dictionary(4);
+    if (argc >= 3)
+    {
+        order = std::stoi(argv[2]);
+    }
+
+    cout << "Using B+ Tree order: " << order << "\n";
+
+    BPlusTree<string, string> dictionary(order);
     vector<pair<string, string>> entries;
 
     if (!load_dict_json(path, entries))
@@ -286,17 +309,29 @@ int main(int argc, char *argv[])
         cout << "Failed to load dict.json file: " << path << endl;
         return 1;
     }
+
+    auto start_insert = std::chrono::high_resolution_clock::now();
     for (auto &entry : entries)
         dictionary.insert(entry.first, entry.second);
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> insert_ms = end_insert - start_insert;
 
     cout << "English-Bangla dictionary loaded from file: " << path << endl;
-    cout << "Loaded " << entries.size() << " entries." << endl;
-    cout << "Leaf list (key, value) in sorted order:\n";
-    dictionary.printLeaves();
+    // cout << "Loaded " << entries.size() << " entries." << endl;
+    cout << "Insertion time: " << insert_ms.count() << " ms\n";
+
+    // cout << "Leaf list (key, value) in sorted order:\n";
+    // dictionary.printLeaves();
 
     string query = "apple";
     string translation;
-    if (dictionary.search(query, translation))
+
+    auto start_search = std::chrono::high_resolution_clock::now();
+    bool found = dictionary.search(query, translation);
+    auto end_search = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> search_ms = end_search - start_search;
+
+    if (found)
     {
         cout << "Search result: " << query << " -> " << translation << "\n";
     }
@@ -304,6 +339,8 @@ int main(int argc, char *argv[])
     {
         cout << "Word not found: " << query << "\n";
     }
+
+    cout << "Search time: " << search_ms.count() << " ms\n";
 
     return 0;
 }
