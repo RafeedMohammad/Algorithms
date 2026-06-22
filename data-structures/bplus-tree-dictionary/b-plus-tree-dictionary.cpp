@@ -276,7 +276,7 @@ int main(int argc, char *argv[])
     SetConsoleOutputCP(CP_UTF8);
 #endif
 
-    string path = "data/dict.json";
+    string path = "data/dict-2.json";
     int order = 64;
 
     if (argc >= 2)
@@ -323,7 +323,7 @@ int main(int argc, char *argv[])
     // cout << "Leaf list (key, value) in sorted order:\n";
     // dictionary.printLeaves();
 
-    string query = "apple";
+    string query = "saber";
     string translation;
 
     auto start_search = std::chrono::high_resolution_clock::now();
