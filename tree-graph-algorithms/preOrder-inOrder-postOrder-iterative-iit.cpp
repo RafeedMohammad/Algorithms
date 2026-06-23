@@ -44,6 +44,30 @@ void preOrderIterative(Node *root)
     }
 }
 
+void inOrderIterative(Node *root)
+{
+    stck[0] = nullptr;
+    int top = 1;
+    Node *ptr = root;
+
+    while (ptr != nullptr || top > 1)
+    {
+        while (ptr != nullptr)
+        {
+            stck[top++] = ptr;
+            ptr = ptr->left;
+        }
+
+        ptr = stck[--top];
+
+        if (ptr != nullptr)
+        {
+            cout << ptr->data << "  ";
+            ptr = ptr->right;
+        }
+    }
+}
+
 int main()
 {
     Node *root = new Node(1);
@@ -69,7 +93,9 @@ int main()
     preOrderIterative(root);
     cout << endl;
 
-    // inOrderIterative(root);
+    cout << "Inorder Traversal: " << endl;
+
+    inOrderIterative(root);
     // cout << endl;
 
     // postOrderIterative(root);
