@@ -89,3 +89,16 @@ int main()
 
     return 0;
 }
+
+/*
+     0 ——————— 1 ——————— 2
+     |         |         |
+     |         |         |
+     |         |         |
+     5 ——————— 4 ——————— 3
+
+    Graph Characteristics:
+    - Vertices: 6 (0 to 5)
+    - Edges: 7
+    - Type: Undirected (forming a 2x3 grid)
+*/

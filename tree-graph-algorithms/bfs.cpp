@@ -106,3 +106,20 @@ int main()
     printPath(0, 3);
     return 0;
 }
+
+/*
+     0 ——————— 1 ——————— 2
+     |         |         |
+     |         |         |
+     |         |         |
+     5 ——————— 4 ——————— 3
+
+    Graph Characteristics:
+    - Vertices: 6 (0 to 5)
+    - Edges: 7
+    - Type: Undirected
+
+    BFS Shortest Path (from 0 to 3):
+    - Path length / Distance: 3 edges
+    - Your printPath(0, 3) will output: 0 1 2 3
+*/

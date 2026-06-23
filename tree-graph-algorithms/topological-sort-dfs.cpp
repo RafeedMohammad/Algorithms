@@ -111,3 +111,35 @@ int main()
 
     return 0;
 }
+
+/*
+   TEST 1: Bipartite Graph (Square / Even Cycle)
+
+       0 ——————————————— 1
+       |                 |
+       |                 |
+       |                 |
+       3 ——————————————— 2
+
+    Graph Characteristics:
+    - Vertices: 4 (0 to 3)
+    - Edges: 4
+    - Type: Undirected
+    - Bipartite: YES
+*/
+
+/*
+   TEST 2: Non-Bipartite Graph (Triangle / Odd Cycle)
+
+                 0
+                / \
+               /   \
+              /     \
+             1 ————— 2
+
+    Graph Characteristics:
+    - Vertices: 3 (0 to 2)
+    - Edges: 3
+    - Type: Undirected
+    - Bipartite: NO
+*/

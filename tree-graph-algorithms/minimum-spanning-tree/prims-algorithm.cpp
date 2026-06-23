@@ -108,3 +108,19 @@ int main()
 
     return 0;
 }
+
+/*
+              (wt: 2)           (wt: 5)
+           0 ——————————————— 1 ——————————————— 4
+           | \                               / |
+           |  \ (wt: 6)             (wt: 1) /  |
+   (wt: 1) |   \                           /   | (wt: 4)
+           |    ———————————— 2 ————————————    |
+           |                                   |
+           +———————————————— 3 ————————————————+
+
+    Graph Characteristics:
+    - Vertices: 5 (0 to 4)
+    - Edges: 6
+    - Type: Weighted, Undirected
+*/
